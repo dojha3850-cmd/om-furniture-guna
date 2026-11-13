@@ -67,6 +67,18 @@ def upload_photo():
         return jsonify(error="Only JPG, PNG, WEBP and GIF images are allowed"), 400
     return jsonify(ok=True, uploaded=saved), 201
 
+@app.get("/robots.txt")
+def robots():
+    return "User-agent: *\nAllow: /\nSitemap: https://om-furniture-guna.onrender.com/sitemap.xml\n", 200, {"Content-Type": "text/plain; charset=utf-8"}
+
+@app.get("/sitemap.xml")
+def sitemap():
+    xml = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://om-furniture-guna.onrender.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+</urlset>"""
+    return xml, 200, {"Content-Type": "application/xml; charset=utf-8"}
+
 @app.get("/health")
 def health():
     return jsonify(status="ok")
