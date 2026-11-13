@@ -48,18 +48,24 @@ def photos():
 
 @app.post("/api/photos")
 def upload_photo():
-    f = request.files.get("photo")
-    if not f or not f.filename:
-        return jsonify(error="Choose a photo"), 400
-    ext = f.filename.rsplit(".", 1)[-1].lower() if "." in f.filename else ""
-    if ext not in ALLOWED:
-        return jsonify(error="Only JPG, PNG, WEBP and GIF images are allowed"), 400
-    filename = f"{uuid.uuid4().hex}.{ext}"
-    f.save(UPLOADS / secure_filename(filename))
+    files = request.files.getlist("photos") or request.files.getlist("photo")
+    files = [f for f in files if f and f.filename]
+    if not files:
+        return jsonify(error="Choose at least one photo"), 400
     caption = str(request.form.get("caption", "")).strip()[:180]
+    saved = 0
     with db() as con:
-        con.execute("INSERT INTO photos(filename, caption) VALUES(?,?)", (filename, caption))
-    return jsonify(ok=True), 201
+        for f in files[:20]:
+            ext = f.filename.rsplit(".", 1)[-1].lower() if "." in f.filename else ""
+            if ext not in ALLOWED:
+                continue
+            filename = f"{uuid.uuid4().hex}.{ext}"
+            f.save(UPLOADS / secure_filename(filename))
+            con.execute("INSERT INTO photos(filename, caption) VALUES(?,?)", (filename, caption))
+            saved += 1
+    if not saved:
+        return jsonify(error="Only JPG, PNG, WEBP and GIF images are allowed"), 400
+    return jsonify(ok=True, uploaded=saved), 201
 
 @app.get("/health")
 def health():
