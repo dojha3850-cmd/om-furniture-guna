@@ -25,7 +25,7 @@ def init_db():
         con.execute("""CREATE TABLE IF NOT EXISTS photos (
             id INTEGER PRIMARY KEY AUTOINCREMENT, filename TEXT NOT NULL,
             caption TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)""")
-
+init_db()
 @app.get("/")
 def home():
     return render_template("index.html")
