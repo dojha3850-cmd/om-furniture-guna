@@ -30,6 +30,10 @@ init_db()
 def home():
     return render_template("index.html")
 
+@app.get("/google6e94bd160f6f3271.html")
+def google_site_verification():
+    return "google-site-verification: google6e94bd160f6f3271.html", 200, {"Content-Type": "text/plain; charset=utf-8"}
+
 @app.post("/api/enquiries")
 def enquiry():
     data = request.get_json(silent=True) or {}
@@ -69,7 +73,7 @@ def upload_photo():
 
 @app.get("/robots.txt")
 def robots():
-    return "User-agent: *\nAllow: /\nSitemap: https://om-furniture-guna.onrender.com/sitemap.xml\n", 200, {"Content-Type": "text/plain; charset=utf-8"}
+    return "User-agent: *\\nAllow: /\\nSitemap: https://om-furniture-guna.onrender.com/sitemap.xml\\n", 200, {"Content-Type": "text/plain; charset=utf-8"}
 
 @app.get("/sitemap.xml")
 def sitemap():
